@@ -1,0 +1,18 @@
+diff --git a/image/cinelerra-cv.desktop b/image/cinelerra-cv.desktop
+index 5d534ac..684fbd9 100644
+--- a/image/cinelerra-cv.desktop
++++ b/image/cinelerra-cv.desktop
+@@ -4,10 +4,10 @@ Name[ja]=Cinelerra-CV
+ Name[sl]=Cinelerra-CV
+ Name[fr]=Cinelerra-CV
+ Name[es]=Cinelerra-CV
+-Comment=Video Editor
+-Categories=Application;AudioVideo;Multimedia;VideoEditing;
++Comment=Capture and Edit Videos
++Categories=AudioVideo;
+ Encoding=UTF-8
+-Exec=cinelerra
++Exec=cinelerra-cv
+ Icon=cinelerra-cv.xpm
+ Terminal=false
+ Type=Application
