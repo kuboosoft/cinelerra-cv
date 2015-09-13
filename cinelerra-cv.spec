@@ -134,7 +134,6 @@ autoreconf -fi
 %{?_with_libmpeg3_system: --with-external-libmpeg3 } \
 %{?_with_ffmpeg_system: --with-external-ffmpeg } \
   --enable-opengl \
-  --enable-freetype2 \
   --disable-static \
 %ifarch %{ix86} x86_64
   --enable-mmx \
@@ -147,8 +146,7 @@ autoreconf -fi
 %else
   --disable-altivec \
 %endif
-  --disable-rpath \
-  FREETYPE_CFLAGS="-I%{_includedir}/freetype2" \
+  --disable-rpath
 
 # remove executable stack
 #export LDFLAGS+=" -Wl,-z,noexecstack"
