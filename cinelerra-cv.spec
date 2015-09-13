@@ -1,6 +1,6 @@
-# globals for cinelerra-cv-2.2.1-20141224git70b8c14.tar.bz2
-%global gitdate 20141224
-%global gitversion 70b8c14
+# globals for cinelerra-cv-2.3-20150912gitc25d3b1.tar.bz2
+%global gitdate 20150912
+%global gitversion c25d3b1
 %global gver .%{gitdate}git%{gitversion}
 %global snapshot %{gitdate}git%{gitversion}
 
@@ -21,31 +21,23 @@
 
 Summary: Advanced audio and video capturing, compositing, and editing
 Name: cinelerra-cv
-Version: 2.2.1
-Release: 0.9%{gver}%{?dist}
+Version: 2.3
+Release: 1%{gver}%{?dist}
 License: GPL
 Group: Applications/Multimedia
 URL: http://cinelerra-cv.org/
-# cinelerra-cv-2.2.1-%{snapshot}.tar.bz2 obtained with :
-# package=cinelerra-cv-2.2.1
-# date=$(date +%Y%m%d)
-# git clone git://git.cinelerra-cv.org/CinelerraCV.git cinelerra-cv-2.2
-# cd cinelerra-cv-2.2
-# tag=$(git rev-list master -n 1 | cut -c 1-7)
-# git archive master --prefix=cinelerra-cv-2.2/ | bzip2 > ../${package}-${date}git${tag}.tar.bz2
-
-Source0: cinelerra-cv-2.2.1-%{snapshot}.tar.bz2
+# cinelerra-cv-%{version}-%{snapshot}.tar.bz2 obtained with ./cinelerra-cv-snapshot.sh
+Source0: cinelerra-cv-%{version}-%{snapshot}.tar.bz2
 Source1: cinelerra-cv.conf
 Source2: cinelerra-cv-snapshot.sh
 Patch1: cinelerra-cv-desktop.patch
 Patch2: cinelerra-cv-remove-fonts.patch
-Patch3: cinelerra-cv-2.1.5-fix-font.patch
-Patch4: 0001-Make-it-possible-to-link-with-the-system-libmpeg3-li.patch
 Patch5: cinelerra-cv-ffmpeg_api2.2.patch
 Patch6: cinelerra-cv-ffmpeg2.0.patch
 
 BuildRequires: autoconf, automake, libtool
-BuildRequires: libXt-devel, libXv-devel, libXxf86vm-devel, libXext-devel
+BuildRequires: libXt-devel libXv-devel libXxf86vm-devel libXext-devel
+BuildRequires: libXft-devel
 BuildRequires: fontconfig-devel
 BuildRequires: gettext-devel
 Buildrequires: esound-devel
@@ -65,13 +57,13 @@ BuildRequires: libiec61883-devel
 # >= 0.5.0 required because of the use of avc1394_vcr_get_timecode2
 BuildRequires: libavc1394-devel >= 0.5.0
 BuildRequires: x264-devel
-BuildRequires: libogg-devel, libvorbis-devel, libtheora-devel
-BuildRequires: libGL-devel, libGLU-devel
+BuildRequires: libogg-devel libvorbis-devel libtheora-devel
+BuildRequires: libGL-devel libGLU-devel
 # Stuff not checked by configure, but still required
 BuildRequires: nasm
 BuildRequires: freetype-devel
 BuildRequires: faac-devel
-BuildRequires: libjpeg-devel, libpng-devel, libtiff-devel
+BuildRequires: libjpeg-devel libpng-devel libtiff-devel
 BuildRequires: imlib2-devel
 BuildRequires: libdv-devel
 Buildrequires: ffmpeg-devel
@@ -123,11 +115,9 @@ This is the Community maintained Version of cinelerra.
 This package contains static libraries and header files need for development.
 
 %prep
-%setup -q -n cinelerra-cv-2.2
+%setup -q
 %patch1 -p1 -b .desktop
 %patch2 -p1 -b .font_remove
-%patch3 -p1 -b .font_fix
-%patch4 -p1 -b .libmpeg3_system
 %if %{with_ffmpeg_system}
 %patch5 -p1 -b .ffmpeg_api
 %patch6 -p1 -b .ffmpeg2.0
