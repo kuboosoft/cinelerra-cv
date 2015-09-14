@@ -22,7 +22,7 @@
 Summary: Advanced audio and video capturing, compositing, and editing
 Name: cinelerra-cv
 Version: 2.3
-Release: 1%{gver}%{?dist}
+Release: 2%{gver}%{?dist}
 License: GPL
 Group: Applications/Multimedia
 URL: http://cinelerra-cv.org/
@@ -67,7 +67,8 @@ BuildRequires: libjpeg-devel libpng-devel libtiff-devel
 BuildRequires: imlib2-devel
 BuildRequires: libdv-devel
 Buildrequires: ffmpeg-devel
-# Thiw is wip (should be used instead of toolame )
+BuildRequires: opencv-devel
+# This is wip (should be used instead of toolame )
 #BuildRequires: twolame-devel
 %{?_with_libmpeg3_system:BuildRequires: libmpeg3-devel}
 BuildRequires: desktop-file-utils
@@ -237,6 +238,13 @@ fi
 
 
 %changelog
+* Mon Sep 14 2015 Sérgio Basto <sergio@serjux.com> - 2.3-2.20150912gitc25d3b1
+- Enabled findobject plugin using OpenCV 2.0 .
+- Fix unknown freetype2 option, an configure warning.
+
+* Sun Sep 13 2015 Sérgio Basto <sergio@serjux.com> - 2.3-1.20150912gitc25d3b1
+- Update cinelerra-cv to 2.3 more a few commits.
+
 * Wed Dec 24 2014 Sérgio Basto <sergio@serjux.com> - 2.2.1-0.9.20141224git70b8c14
 - Update to 20141224git70b8c14
 
