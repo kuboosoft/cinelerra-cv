@@ -22,7 +22,7 @@
 Summary: Advanced audio and video capturing, compositing, and editing
 Name: cinelerra-cv
 Version: 2.3
-Release: 2%{gver}%{?dist}
+Release: 3%{gver}%{?dist}
 License: GPL
 Group: Applications/Multimedia
 URL: http://cinelerra-cv.org/
@@ -34,8 +34,9 @@ Patch1: cinelerra-cv-desktop.patch
 Patch2: cinelerra-cv-remove-fonts.patch
 Patch5: cinelerra-cv-ffmpeg_api2.2.patch
 Patch6: cinelerra-cv-ffmpeg2.0.patch
+Patch7: cinelerra-cv-intltoolize.patch
 
-BuildRequires: autoconf, automake, libtool
+BuildRequires: autoconf automake libtool intltool
 BuildRequires: libXt-devel libXv-devel libXxf86vm-devel libXext-devel
 BuildRequires: libXft-devel
 BuildRequires: fontconfig-devel
@@ -123,11 +124,12 @@ This package contains static libraries and header files need for development.
 %patch5 -p1 -b .ffmpeg_api
 %patch6 -p1 -b .ffmpeg2.0
 %endif
+%patch7 -p1 -b .intltoolize
 
-autoreconf -fi
+autoreconf -i
+intltoolize
 
 %build
-
 %configure \
   --with-buildinfo="Custom RPMFusion %{version}-%{release} version for Fedora/EPEL" \
   --program-suffix=-cv \
@@ -238,6 +240,9 @@ fi
 
 
 %changelog
+* Tue Sep 15 2015 Sérgio Basto <sergio@serjux.com> - 2.3-3.20150912gitc25d3b1
+- Applied cinelerra-cv-intltoolize.patch
+
 * Mon Sep 14 2015 Sérgio Basto <sergio@serjux.com> - 2.3-2.20150912gitc25d3b1
 - Enabled findobject plugin using OpenCV 2.0 .
 - Fix unknown freetype2 option, an configure warning.
