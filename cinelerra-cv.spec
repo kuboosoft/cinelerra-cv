@@ -126,8 +126,9 @@ This package contains static libraries and header files need for development.
 %endif
 %patch7 -p1 -b .intltoolize
 
-autoreconf -i
-intltoolize
+#autoreconf -i
+#intltoolize
+./autogen.sh
 
 %build
 %configure \
