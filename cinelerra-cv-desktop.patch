@@ -1,5 +1,26 @@
+commit f890c31042a2f38affea1e3d1fcdebb41ae4f372
+Author: Sérgio M. Basto <sergio@serjux.com>
+Date:   Tue Sep 15 07:22:07 2015 +0100
+
+    The most important is: Exec=cinelerra-cv instead Exec=cinelerra
+
+    Also fixes  desktop-file-install cinelerra-cv.desktop errors:
+    
+    error: (will be fatal in the future): value "cinelerra-cv.xpm" for key "Icon" in group
+    "Desktop Entry" is an icon name with an extension, but there should be
+    no extension as described in the Icon Theme Specification if
+    the value is not an absolute path
+    
+    error: value "Application;AudioVideo;Multimedia;VideoEditing;" for key
+    "Categories" in group "Desktop Entry" contains an unregistered value
+    "Multimedia"; values extending the format should start with "X-"
+    
+    and error: value "Application;AudioVideo;Multimedia;VideoEditing;" for key
+    "Categories" in group "Desktop Entry" contains an unregistered value
+    "VideoEditing"; values extending the format should start with "X-"
+
 diff --git a/image/cinelerra-cv.desktop b/image/cinelerra-cv.desktop
-index 5d534ac..684fbd9 100644
+index 5d534ac..8a39644 100644
 --- a/image/cinelerra-cv.desktop
 +++ b/image/cinelerra-cv.desktop
 @@ -4,10 +4,10 @@ Name[ja]=Cinelerra-CV
@@ -8,11 +29,12 @@ index 5d534ac..684fbd9 100644
  Name[es]=Cinelerra-CV
 -Comment=Video Editor
 -Categories=Application;AudioVideo;Multimedia;VideoEditing;
-+Comment=Capture and Edit Videos
-+Categories=AudioVideo;
++Comment=Advanced audio and video capturing, compositing, and editing
++Categories=Application;AudioVideo;
  Encoding=UTF-8
 -Exec=cinelerra
+-Icon=cinelerra-cv.xpm
 +Exec=cinelerra-cv
- Icon=cinelerra-cv.xpm
++Icon=cinelerra-cv
  Terminal=false
  Type=Application
