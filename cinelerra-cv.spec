@@ -36,11 +36,9 @@ Patch5: cinelerra-cv-ffmpeg_api2.2.patch
 Patch6: cinelerra-cv-ffmpeg2.0.patch
 Patch7: cinelerra-cv-intltoolize.patch
 
-BuildRequires: autoconf automake libtool intltool
-BuildRequires: libXt-devel libXv-devel libXxf86vm-devel libXext-devel
-BuildRequires: libXft-devel
+BuildRequires: autoconf automake libtool intltool gettext-devel
+BuildRequires: libXft-devel libXt-devel libXv-devel libXxf86vm-devel libXext-devel
 BuildRequires: fontconfig-devel
-BuildRequires: gettext-devel
 Buildrequires: esound-devel
 BuildRequires: alsa-lib-devel >= 1.0.2
 BuildRequires: mjpegtools-devel
