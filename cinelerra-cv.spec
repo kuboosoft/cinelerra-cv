@@ -1,6 +1,6 @@
-# globals for cinelerra-cv-2.3-20150929git2c849c6.tar.bz2
-%global gitdate 20150929
-%global gitversion 2c849c6
+# globals for cinelerra-cv-2.3-20151005gitd189a04.tar.bz2
+%global gitdate 20151005
+%global gitversion d189a04
 %global gver .%{gitdate}git%{gitversion}
 %global snapshot %{gitdate}git%{gitversion}
 
@@ -22,7 +22,7 @@
 Summary: Advanced audio and video capturing, compositing, and editing
 Name: cinelerra-cv
 Version: 2.3
-Release: 4%{gver}%{?dist}
+Release: 5%{gver}%{?dist}
 License: GPL
 Group: Applications/Multimedia
 URL: http://cinelerra-cv.org/
@@ -237,6 +237,9 @@ fi
 
 
 %changelog
+* Mon Oct 05 2015 Sérgio Basto <sergio@serjux.com> - 2.3-5.20151005gitd189a04
+- Update to git d189a04
+
 * Tue Sep 29 2015 Sérgio Basto <sergio@serjux.com> - 2.3-4.20150929git2c849c6
 - Drop upstreamed cinelerra-cv-intltoolize.patch
 
