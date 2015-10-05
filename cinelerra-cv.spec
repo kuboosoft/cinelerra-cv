@@ -1,6 +1,6 @@
-# globals for cinelerra-cv-2.3-20150912gitc25d3b1.tar.bz2
-%global gitdate 20150912
-%global gitversion c25d3b1
+# globals for cinelerra-cv-2.3-20150929git2c849c6.tar.bz2
+%global gitdate 20150929
+%global gitversion 2c849c6
 %global gver .%{gitdate}git%{gitversion}
 %global snapshot %{gitdate}git%{gitversion}
 
@@ -22,7 +22,7 @@
 Summary: Advanced audio and video capturing, compositing, and editing
 Name: cinelerra-cv
 Version: 2.3
-Release: 3%{gver}%{?dist}
+Release: 4%{gver}%{?dist}
 License: GPL
 Group: Applications/Multimedia
 URL: http://cinelerra-cv.org/
@@ -34,7 +34,6 @@ Patch1: cinelerra-cv-desktop.patch
 Patch2: cinelerra-cv-remove-fonts.patch
 Patch5: cinelerra-cv-ffmpeg_api2.2.patch
 Patch6: cinelerra-cv-ffmpeg2.0.patch
-Patch7: cinelerra-cv-intltoolize.patch
 
 BuildRequires: autoconf automake libtool intltool gettext-devel
 BuildRequires: libXft-devel libXt-devel libXv-devel libXxf86vm-devel libXext-devel
@@ -122,7 +121,6 @@ This package contains static libraries and header files need for development.
 %patch5 -p1 -b .ffmpeg_api
 %patch6 -p1 -b .ffmpeg2.0
 %endif
-%patch7 -p1 -b .intltoolize
 
 #autoreconf -i
 #intltoolize
@@ -239,6 +237,9 @@ fi
 
 
 %changelog
+* Tue Sep 29 2015 Sérgio Basto <sergio@serjux.com> - 2.3-4.20150929git2c849c6
+- Drop upstreamed cinelerra-cv-intltoolize.patch
+
 * Tue Sep 15 2015 Sérgio Basto <sergio@serjux.com> - 2.3-3.20150912gitc25d3b1
 - Applied cinelerra-cv-intltoolize.patch
 
