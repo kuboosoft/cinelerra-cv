@@ -1,6 +1,6 @@
-# globals for cinelerra-cv-2.3-20151005gitd189a04.tar.bz2
-%global gitdate 20151005
-%global gitversion d189a04
+# globals for cinelerra-cv-2.3-20151026git99d2887.tar.bz2
+%global gitdate 20151026
+%global gitversion 99d2887
 %global gver .%{gitdate}git%{gitversion}
 %global snapshot %{gitdate}git%{gitversion}
 
@@ -22,7 +22,7 @@
 Summary: Advanced audio and video capturing, compositing, and editing
 Name: cinelerra-cv
 Version: 2.3
-Release: 5%{gver}%{?dist}
+Release: 6%{gver}%{?dist}
 License: GPL
 Group: Applications/Multimedia
 URL: http://cinelerra-cv.org/
@@ -30,8 +30,8 @@ URL: http://cinelerra-cv.org/
 Source0: cinelerra-cv-%{version}-%{snapshot}.tar.bz2
 Source1: cinelerra-cv.conf
 Source2: cinelerra-cv-snapshot.sh
+
 Patch1: cinelerra-cv-desktop.patch
-Patch2: cinelerra-cv-remove-fonts.patch
 Patch5: cinelerra-cv-ffmpeg_api2.2.patch
 Patch6: cinelerra-cv-ffmpeg2.0.patch
 
@@ -116,7 +116,6 @@ This package contains static libraries and header files need for development.
 %prep
 %setup -q
 %patch1 -p1 -b .desktop
-%patch2 -p1 -b .font_remove
 %if %{with_ffmpeg_system}
 %patch5 -p1 -b .ffmpeg_api
 %patch6 -p1 -b .ffmpeg2.0
@@ -237,6 +236,9 @@ fi
 
 
 %changelog
+* Mon Oct 26 2015 Sérgio Basto <sergio@serjux.com> - 2.3-6.20151026git99d2887
+- Update to git 99d2887, drop cinelerra-cv-remove-fonts.patch is was applied upstream.
+
 * Mon Oct 05 2015 Sérgio Basto <sergio@serjux.com> - 2.3-5.20151005gitd189a04
 - Update to git d189a04
 
