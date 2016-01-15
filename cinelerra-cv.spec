@@ -1,6 +1,6 @@
-# globals for cinelerra-cv-2.3-20151026git99d2887.tar.bz2
-%global gitdate 20151026
-%global gitversion 99d2887
+# globals for cinelerra-cv-2.3-20160114git454be60.tar.bz2
+%global gitdate 20160114
+%global gitversion 454be60
 %global gver .%{gitdate}git%{gitversion}
 %global snapshot %{gitdate}git%{gitversion}
 
@@ -8,22 +8,17 @@
 %if 0%{?fedora} == 19
 %global optflags %(echo %{optflags} -D__STDC_CONSTANT_MACROS )
 %endif
+#Disabling hardened linkage, until find out a solution.
+%global __global_ldflags %(echo %{__global_ldflags} | sed 's/-specs=.*hardened-ld//' )
 
-#defaults switch _with_libmpeg3_system and global with_libmpeg3_system to 1
-%{!?_with_libmpeg3_system: %{!?_without_libmpeg3_system: %global _with_libmpeg3_system 1}}
-%{?_with_libmpeg3_system: %global with_libmpeg3_system 1}
-%{?_without_libmpeg3_system: %global with_libmpeg3_system 0}
-
-#defaults switch _with_ffmpeg_system and global with_ffmpeg_system to 1
-%{!?_with_ffmpeg_system: %{!?_without_ffmpeg_system: %global _with_ffmpeg_system 1}}
-%{?_with_ffmpeg_system: %global with_ffmpeg_system 1}
-%{?_without_ffmpeg_system: %global with_ffmpeg_system 0}
+%bcond_without libmpeg3_system
+%bcond_without ffmpeg_system
 
 Summary: Advanced audio and video capturing, compositing, and editing
 Name: cinelerra-cv
 Version: 2.3
-Release: 6%{gver}%{?dist}
-License: GPL
+Release: 7%{gver}%{?dist}
+License: GPLv2
 Group: Applications/Multimedia
 URL: http://cinelerra-cv.org/
 # cinelerra-cv-%{version}-%{snapshot}.tar.bz2 obtained with ./cinelerra-cv-snapshot.sh
@@ -68,7 +63,7 @@ Buildrequires: ffmpeg-devel
 BuildRequires: opencv-devel
 # This is wip (should be used instead of toolame )
 #BuildRequires: twolame-devel
-%{?_with_libmpeg3_system:BuildRequires: libmpeg3-devel}
+%{?with_libmpeg3_system:BuildRequires: libmpeg3-devel}
 BuildRequires: desktop-file-utils
 
 Requires(post): desktop-file-utils
@@ -81,7 +76,7 @@ Requires: bitstream-vera-fonts-common bitstream-vera-sans-fonts
 Requires: bitstream-vera-sans-mono-fonts bitstream-vera-serif-fonts
 Requires: mjpegtools
 # if we use system libmpeg3
-%{?_with_libmpeg3_system:Requires: libmpeg3-utils}
+%{?with_libmpeg3_system:Requires: libmpeg3-utils}
 
 %description
 Heroine Virtual Ltd. presents an advanced content creation system for Linux.
@@ -116,7 +111,7 @@ This package contains static libraries and header files need for development.
 %prep
 %setup -q
 %patch1 -p1 -b .desktop
-%if %{with_ffmpeg_system}
+%if %{with ffmpeg_system}
 %patch5 -p1 -b .ffmpeg_api
 %patch6 -p1 -b .ffmpeg2.0
 %endif
@@ -130,8 +125,8 @@ This package contains static libraries and header files need for development.
   --with-buildinfo="Custom RPMFusion %{version}-%{release} version for Fedora/EPEL" \
   --program-suffix=-cv \
   --with-plugindir=%{_libdir}/%{name} \
-%{?_with_libmpeg3_system: --with-external-libmpeg3 } \
-%{?_with_ffmpeg_system: --with-external-ffmpeg } \
+%{?with_libmpeg3_system: --with-external-libmpeg3 } \
+%{?with_ffmpeg_system: --with-external-ffmpeg } \
   --enable-opengl \
   --disable-static \
 %ifarch %{ix86} x86_64
@@ -153,12 +148,12 @@ This package contains static libraries and header files need for development.
 #  --with-fontsdir=%{_datadir}/fonts/%{name} \
 #make
 
-%{?_with_libmpeg3_system: rm -rf libmpeg3}
+%{?with_libmpeg3_system: rm -rf libmpeg3}
 
-%{__make} %{?_smp_mflags}
+%make_build
 
 %install
-%{__make} install DESTDIR=%{buildroot} INSTALL="install -p"
+%make_install
 %find_lang %{name}
 
 # Install sysctl.d file
@@ -196,9 +191,10 @@ fi
 /sbin/ldconfig
 
 %files -f %{name}.lang
-%doc AUTHORS COPYING LICENSE
+%doc AUTHORS
+%license COPYING LICENSE
 %{_bindir}/cinelerra-cv
-%if %{with_libmpeg3_system} == 0
+%if ! %{with libmpeg3_system}
   %{_bindir}/mpeg3cat-cv
   %{_bindir}/mpeg3dump-cv
   %{_bindir}/mpeg3toc-cv
@@ -207,7 +203,7 @@ fi
 
 %{_libdir}/*.so.*
 %{_libdir}/%{name}
-%if %{with_ffmpeg_system} == 0
+%if ! %{with ffmpeg_system}
 %{_libdir}/vhook/drawtext.so
 %{_libdir}/vhook/imlib2.so
 %{_libdir}/vhook/fish.so
@@ -221,7 +217,7 @@ fi
 
 %files devel
 %doc ChangeLog NEWS README.BUILD TODO
-%if %{with_libmpeg3_system} == 0
+%if ! %{with libmpeg3_system}
   %dir %{_includedir}/mpeg3
   %{_includedir}/mpeg3/*.h
   %{_libdir}/libmpeg3hv.so
@@ -230,12 +226,19 @@ fi
 %{_includedir}/quicktime/*.h
 %{_libdir}/libguicast.so
 %{_libdir}/libquicktimehv.so
-%if %{with_ffmpeg_system} == 0
+%if ! %{with ffmpeg_system}
 %{_libdir}/*cinelerra.so
 %endif
 
 
 %changelog
+* Thu Jan 14 2016 Sérgio Basto <sergio@serjux.com> - 2.3-7.20160114git454be60
+- Update license tag.
+- Add license macro.
+- use macro make_build .
+- use macro make_install .
+- Improve conditional builds.
+
 * Mon Oct 26 2015 Sérgio Basto <sergio@serjux.com> - 2.3-6.20151026git99d2887
 - Update to git 99d2887, drop cinelerra-cv-remove-fonts.patch is was applied upstream.
 
