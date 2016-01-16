@@ -1,6 +1,6 @@
-# globals for cinelerra-cv-2.3-20160114git454be60.tar.bz2
-%global gitdate 20160114
-%global gitversion 454be60
+# globals for cinelerra-cv-2.3-20160216git5aa9bc2.tar.bz2
+%global gitdate 20160216
+%global gitversion 5aa9bc2
 %global gver .%{gitdate}git%{gitversion}
 %global snapshot %{gitdate}git%{gitversion}
 
@@ -8,8 +8,6 @@
 %if 0%{?fedora} == 19
 %global optflags %(echo %{optflags} -D__STDC_CONSTANT_MACROS )
 %endif
-#Disabling hardened linkage, until find out a solution.
-%global __global_ldflags %(echo %{__global_ldflags} | sed 's/-specs=.*hardened-ld//' )
 
 %bcond_without libmpeg3_system
 %bcond_without ffmpeg_system
@@ -17,11 +15,11 @@
 Summary: Advanced audio and video capturing, compositing, and editing
 Name: cinelerra-cv
 Version: 2.3
-Release: 7%{gver}%{?dist}
-License: GPLv2
+Release: 8%{gver}%{?dist}
+License: GPLv2+ and MIT and CeCILL and LGPLv2+
 Group: Applications/Multimedia
 URL: http://cinelerra-cv.org/
-# cinelerra-cv-%{version}-%{snapshot}.tar.bz2 obtained with ./cinelerra-cv-snapshot.sh
+# cinelerra-cv-%%{version}-%%{snapshot}.tar.bz2 obtained with ./cinelerra-cv-snapshot.sh
 Source0: cinelerra-cv-%{version}-%{snapshot}.tar.bz2
 Source1: cinelerra-cv.conf
 Source2: cinelerra-cv-snapshot.sh
@@ -29,6 +27,8 @@ Source2: cinelerra-cv-snapshot.sh
 Patch1: cinelerra-cv-desktop.patch
 Patch5: cinelerra-cv-ffmpeg_api2.2.patch
 Patch6: cinelerra-cv-ffmpeg2.0.patch
+Patch7: 0001-AutoTools-replace-the-obsoleted-AC_PROG_LIBTOOL.patch
+Patch8: 0002-guicast-Makefile.am-don-t-discard-cflags.patch
 
 BuildRequires: autoconf automake libtool intltool gettext-devel
 BuildRequires: libXft-devel libXt-devel libXv-devel libXxf86vm-devel libXext-devel
@@ -65,12 +65,8 @@ BuildRequires: opencv-devel
 #BuildRequires: twolame-devel
 %{?with_libmpeg3_system:BuildRequires: libmpeg3-devel}
 BuildRequires: desktop-file-utils
+BuildRequires: execstack
 
-Requires(post): desktop-file-utils
-Requires(postun): desktop-file-utils
-# Needed for the shmmax tweak
-Requires(post): /sbin/sysctl
-Requires(postun): /sbin/sysctl
 # Needed fonts are provided once
 Requires: bitstream-vera-fonts-common bitstream-vera-sans-fonts
 Requires: bitstream-vera-sans-mono-fonts bitstream-vera-serif-fonts
@@ -81,12 +77,12 @@ Requires: mjpegtools
 %description
 Heroine Virtual Ltd. presents an advanced content creation system for Linux.
 
-There are two types of moviegoers: producers who create new content, going back over their content at
-future points for further refinement, and consumers who want to acquire the content and watch it.
-Cinelerra is not intended for consumers.
-Cinelerra has many features for uncompressed content, high resolution processing, and compositing,
-with very few shortcuts.
-Producers need these features because of the need to retouch many generations of footage with
+There are two types of moviegoers: producers who create new content, going back
+over their content at future points for further refinement, and consumers who
+want to acquire the content and watch it.  Cinelerra is not intended for
+consumers.  Cinelerra has many features for uncompressed content, high
+resolution processing, and compositing, with very few shortcuts.  Producers need
+these features because of the need to retouch many generations of footage with
 alterations to the format, which makes Cinelerra very complex.
 
 Cinelerra was meant to be a Broadcast 2000 replacement.
@@ -99,9 +95,7 @@ A professional audio and video editing software.
 %package devel
 Summary:       Devel package for %{name}
 Group:         Development/Libraries
-Requires:      %{name} = %{?epoch:%epoch:}%{version}-%{release}
-Provides:      cinelerra-devel
-Obsoletes:     cinelerra-devel
+Requires:      %{name}%{?_isa} = %{?epoch:%epoch:}%{version}-%{release}
 
 %description devel
 This is the Community maintained Version of cinelerra.
@@ -110,14 +104,15 @@ This package contains static libraries and header files need for development.
 
 %prep
 %setup -q
+chmod -x guicast/bccmodels.C
 %patch1 -p1 -b .desktop
 %if %{with ffmpeg_system}
 %patch5 -p1 -b .ffmpeg_api
 %patch6 -p1 -b .ffmpeg2.0
 %endif
 
-#autoreconf -i
-#intltoolize
+%patch7 -p1
+%patch8 -p1
 ./autogen.sh
 
 %build
@@ -143,24 +138,22 @@ This package contains static libraries and header files need for development.
   --disable-rpath
 
 # remove executable stack
-#export LDFLAGS+=" -Wl,-z,noexecstack"
-#  --with-pic \
-#  --with-fontsdir=%{_datadir}/fonts/%{name} \
-#make
+export LDFLAGS+=" -Wl,-z,noexecstack"
+sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
 
 %{?with_libmpeg3_system: rm -rf libmpeg3}
 
-%make_build
+%make_build V=1
 
 %install
 %make_install
 %find_lang %{name}
 
 # Install sysctl.d file
-install -p -m 0644 -D %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/sysctl.d/cinelerra-cv.conf
+install -p -m 0644 -D %{SOURCE1} %{buildroot}%{_sysctldir}/cinelerra-cv.conf
 
 desktop-file-install --vendor "" \
-  --dir $RPM_BUILD_ROOT%{_datadir}/applications \
+  --dir %{buildroot}%{_datadir}/applications \
   --delete-original \
   --mode 644 \
   %{buildroot}%{_datadir}/applications/%{name}.desktop
@@ -169,29 +162,22 @@ desktop-file-install --vendor "" \
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 #Fix execstack
-#{_bindir}/execstack -c %{buildroot}%{_libdir}/%{name}/suv.so
-#{_bindir}/execstack -c %{buildroot}%{_libdir}/%{name}/blondtheme.so
-#{_bindir}/execstack -c %{buildroot}%{_libdir}/%{name}/bluedottheme.so
-#{_bindir}/execstack -c %{buildroot}%{_bindir}/cinelerra-cv
+%{_bindir}/execstack -c %{buildroot}%{_libdir}/%{name}/suv.so
+%{_bindir}/execstack -c %{buildroot}%{_libdir}/%{name}/blondtheme.so
+%{_bindir}/execstack -c %{buildroot}%{_libdir}/%{name}/bluedottheme.so
+%{_bindir}/execstack -c %{buildroot}%{_bindir}/cinelerra-cv
 
 
 %post
-if [ $1 -eq 1 ]; then
-  if [ $(/sbin/sysctl -n -q kernel.shmmax) -lt 2147483647 ] ; then
-    # Hack for the package to work "out of the box".
-    /sbin/sysctl -q -w kernel.shmmax=0x7fffffff
-  fi
-fi
-
-/usr/bin/update-desktop-database &>/dev/null || :
+%sysctl_apply cinelerra-cv.conf
 /sbin/ldconfig
 
-%postun
-/usr/bin/update-desktop-database &>/dev/null || :
-/sbin/ldconfig
+
+%postun -p /sbin/ldconfig
 
 %files -f %{name}.lang
 %doc AUTHORS
+%doc ChangeLog NEWS README.BUILD TODO
 %license COPYING LICENSE
 %{_bindir}/cinelerra-cv
 %if ! %{with libmpeg3_system}
@@ -213,17 +199,15 @@ fi
 %endif
 %{_datadir}/applications/cinelerra-cv.desktop
 %{_datadir}/pixmaps/cinelerra-cv.xpm
-%{_sysconfdir}/sysctl.d/cinelerra-cv.conf
+%{_sysctldir}/cinelerra-cv.conf
 
 %files devel
 %doc ChangeLog NEWS README.BUILD TODO
 %if ! %{with libmpeg3_system}
-  %dir %{_includedir}/mpeg3
-  %{_includedir}/mpeg3/*.h
+  %{_includedir}/mpeg3/
   %{_libdir}/libmpeg3hv.so
 %endif
-%dir %{_includedir}/quicktime
-%{_includedir}/quicktime/*.h
+%{_includedir}/quicktime/
 %{_libdir}/libguicast.so
 %{_libdir}/libquicktimehv.so
 %if ! %{with ffmpeg_system}
@@ -232,6 +216,12 @@ fi
 
 
 %changelog
+* Fri Jan 15 2016 Sérgio Basto <sergio@serjux.com> - 2.3-8.20160216git5aa9bc2
+- AutoTools replace the obsoleted AC_PROG_LIBTOOL, patch7.
+- To fix hardened linkage, patch8.
+- More reviews like replace PM_BUILD_ROOT, own directories, more documentation,
+  description-line-too-long errors.
+
 * Thu Jan 14 2016 Sérgio Basto <sergio@serjux.com> - 2.3-7.20160114git454be60
 - Update license tag.
 - Add license macro.

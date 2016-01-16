@@ -1,0 +1,42 @@
+From 3f4af3f902a2f73a3ff46e3909212bca5d612fcc Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?S=C3=A9rgio=20M=2E=20Basto?= <sergio@serjux.com>
+Date: Sat, 16 Jan 2016 03:26:05 +0000
+Subject: [PATCH 2/2] guicast/Makefile.am don't discard cflags.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Remove "custom rule that disregards any fancy flags that the
+user might have set"
+
+Signed-off-by: Sérgio M. Basto <sergio@serjux.com>
+---
+ guicast/Makefile.am | 10 ----------
+ 1 file changed, 10 deletions(-)
+
+diff --git a/guicast/Makefile.am b/guicast/Makefile.am
+index 8f656fe..7b1bea8 100644
+--- a/guicast/Makefile.am
++++ b/guicast/Makefile.am
+@@ -210,18 +210,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/quicktime
+ AM_CXXFLAGS = $(LARGEFILE_CFLAGS) $(X_CFLAGS)
+ LIBTOOL = $(SHELL) $(top_builddir)/libtool $(LTCXX_FLAGS)
+ 
+-# special CFLAGS that can be set on the make command line
+-BOOTSTRAP_CFLAGS=
+ bootstrap_SOURCES=bootstrap.c
+-bootstrap_LDADD =
+-
+-# custom rule that disregards any fancy flags that the user might have set
+-bootstrap.$(OBJEXT): bootstrap.c
+-	$(CC) $(BOOTSTRAP_CFLAGS) -c $<
+ 
+ pngtoh_SOURCES = pngtoh.c
+ 
+-pngtoh$(EXEEXT): pngtoh.c
+-	$(CC) -o pngtoh$(EXEEXT) $<
+-
+ EXTRA_DIST = images
+-- 
+2.5.0
+
