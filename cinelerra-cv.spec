@@ -15,7 +15,7 @@
 Summary: Advanced audio and video capturing, compositing, and editing
 Name: cinelerra-cv
 Version: 2.3
-Release: 8%{gver}%{?dist}
+Release: 9%{gver}%{?dist}
 License: GPLv2+ and MIT and CeCILL and LGPLv2+
 Group: Applications/Multimedia
 URL: http://cinelerra-cv.org/
@@ -29,6 +29,7 @@ Patch5: cinelerra-cv-ffmpeg_api2.2.patch
 Patch6: cinelerra-cv-ffmpeg2.0.patch
 Patch7: 0001-AutoTools-replace-the-obsoleted-AC_PROG_LIBTOOL.patch
 Patch8: 0002-guicast-Makefile.am-don-t-discard-cflags.patch
+Patch9: 0001-Do-not-ask-for-specific-Microsoft-fonts.patch
 
 BuildRequires: autoconf automake libtool intltool gettext-devel
 BuildRequires: libXft-devel libXt-devel libXv-devel libXxf86vm-devel libXext-devel
@@ -113,6 +114,7 @@ chmod -x guicast/bccmodels.C
 
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 ./autogen.sh
 
 %build
@@ -216,10 +218,16 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 
 %changelog
+* Thu Feb 18 2016 Sérgio Basto <sergio@serjux.com> - 2.3-9.20160216git5aa9bc2
+- Fix undefined-non-weak-symbols on libguicast.so .
+- Add 0001-Do-not-ask-for-specific-Microsoft-fonts.patch is what left from
+  patch: "Remove bundle fonts and fix font search path" and was not accepted
+  upstream.
+
 * Fri Jan 15 2016 Sérgio Basto <sergio@serjux.com> - 2.3-8.20160216git5aa9bc2
 - AutoTools replace the obsoleted AC_PROG_LIBTOOL, patch7.
 - To fix hardened linkage, patch8.
-- More reviews like replace PM_BUILD_ROOT, own directories, more documentation,
+- More reviews like replace RPM_BUILD_ROOT, own directories, more documentation,
   description-line-too-long errors.
 
 * Thu Jan 14 2016 Sérgio Basto <sergio@serjux.com> - 2.3-7.20160114git454be60
