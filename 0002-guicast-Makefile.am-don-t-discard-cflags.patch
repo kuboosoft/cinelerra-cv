@@ -1,5 +1,5 @@
 Remove "custom rule that disregards any fancy flags that the
-user might have set" and ../quicktime/libquicktimehv.la
+user might have set" and add ../quicktime/libquicktimehv.la
 
 --- a/guicast/Makefile.am
 +++ b/guicast/Makefile.am
